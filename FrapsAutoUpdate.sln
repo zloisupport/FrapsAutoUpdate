@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29728.190
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrapsAutoUpdate", "FrapsAutoUpdate\FrapsAutoUpdate.csproj", "{B7985ED2-6DBC-4845-A20F-220F49AADC5F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B7985ED2-6DBC-4845-A20F-220F49AADC5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7985ED2-6DBC-4845-A20F-220F49AADC5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7985ED2-6DBC-4845-A20F-220F49AADC5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7985ED2-6DBC-4845-A20F-220F49AADC5F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E6993E5A-2D67-4908-AAEE-4C376A14DE86}
+	EndGlobalSection
+EndGlobal
