@@ -17,7 +17,7 @@ namespace FrapsAutoUpdate
             if (ChkIntConnect() == true)
             {
                 Console.WriteLine("Connection done!");
-            }
+            } 
             else { 
                 Console.WriteLine("Connection error!"); 
             }
