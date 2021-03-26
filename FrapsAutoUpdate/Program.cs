@@ -47,7 +47,15 @@ namespace FrapsAutoUpdate
            // HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest;
             string jsonValue = "";
 
-          
+            WebClient wb = new WebClient();
+            wb.DownloadFile(url, "json.json");
+
+           // using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
+           //{
+              StreamReader reader = new StreamReader("json.json");
+               jsonValue = reader.ReadToEnd();
+            //  }
+            reader.Close();
 
               Employee websitePosts = JsonConvert.DeserializeObject<Employee>(jsonValue);
 
@@ -58,28 +66,13 @@ namespace FrapsAutoUpdate
                 Console.ForegroundColor= ConsoleColor.Green;
                 Console.WriteLine("Connection done!");
                 Console.ResetColor();
-
-                WebClient wb = new WebClient();
-                wb.DownloadFile(url, "json.json");
-
-                // using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
-                //{
-                StreamReader reader = new StreamReader("json.json");
-                jsonValue = reader.ReadToEnd();
-                //  }
-                reader.Close();
             }
             else
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Connection error!");
                 Console.ResetColor();
-                Console.WriteLine("Application Exit");
-             
             }
-
-
-
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine(websitePosts.app_patch_url);
           // Console.WriteLine(websitePosts.site_patch_url);
