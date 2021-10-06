@@ -6,7 +6,7 @@ using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip;
 
 
-namespace FrapsAutoUpdate
+namespace ModSkinLoLUpdater
 {
     class ExtractArhive
     {

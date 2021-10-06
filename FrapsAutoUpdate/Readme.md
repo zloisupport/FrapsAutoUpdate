@@ -1,0 +1,1 @@
+﻿#Fraps Auto Update

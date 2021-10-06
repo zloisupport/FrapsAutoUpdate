@@ -3,18 +3,10 @@ using System.Collections.Generic;
 using System.Net;
 using System.Text;
 
-namespace FrapsAutoUpdate
+namespace ModSkinLoLUpdater
 {
     class CheckVersion
     {
         public string AppVerion { get; set; }
-        
-        //public float GetVersion(float version)
-        //{
-        //    WebClient wb = new WebClient();
-        //    wb.DownloadFile(url, "json.json");
-        //    return version;
-        //}
-
     }
 }

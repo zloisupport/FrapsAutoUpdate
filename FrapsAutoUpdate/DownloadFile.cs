@@ -4,7 +4,8 @@ using System.ComponentModel;
 using System.Net;
 using System.Text;
 
-namespace FrapsAutoUpdate
+
+namespace ModSkinLoLUpdater
 {
     class DownloadFile
     {
@@ -28,12 +29,11 @@ namespace FrapsAutoUpdate
         private void DownloadProgress(object sender, DownloadProgressChangedEventArgs e)
         {
             // Displays the operation identifier, and the transfer progress.
-            Console.WriteLine("{0}    downloaded {1} of {2} bytes. {3} % complete...",
+               Console.WriteLine("{0} downloaded {1} of {2} bytes. {3} % complete...",
                 (string)e.UserState,
                 e.BytesReceived,
                 e.TotalBytesToReceive,
                 e.ProgressPercentage);
-          
         }
 
         private void Completed(object sender, AsyncCompletedEventArgs e)
