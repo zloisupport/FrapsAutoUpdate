@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29728.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrapsAutoUpdate", "FrapsAutoUpdate\FrapsAutoUpdate.csproj", "{B7985ED2-6DBC-4845-A20F-220F49AADC5F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModSkinLOLUpdater", "FrapsAutoUpdate\ModSkinLOLUpdater.csproj", "{B7985ED2-6DBC-4845-A20F-220F49AADC5F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
