@@ -8,7 +8,7 @@ using ICSharpCode.SharpZipLib.Zip;
 
 namespace ModSkinLoLUpdater
 {
-    class ExtractArhive
+   public class ExtractArhive
     {
 
         #region

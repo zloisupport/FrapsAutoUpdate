@@ -36,12 +36,14 @@ namespace ModSkinLoLUpdater
     }
 
 
-    class Program
+  public class Program
     {
 
         private string app_old_ver { get; set; }
         public string app_path { set; get; }
         public object settings { get;set; }
+        public float updater_old_version { get; set; }
+        public float updater_new_version { get; set; }
 
         private string jsonValue = "";
         private string url = "https://raw.githubusercontent.com/zloisupport/testsss/main/json.json";
@@ -83,17 +85,35 @@ namespace ModSkinLoLUpdater
             
         }
 
+
+        
         public void downloadApp()
         {
-            WebClient wb = new WebClient();
-            wb.DownloadFile(url, "json.json");
-            StreamReader reader = new StreamReader("json.json");
-            jsonValue = reader.ReadToEnd();
-            reader.Close();
-            RemoteSettings websitePosts = JsonConvert.DeserializeObject<RemoteSettings>(jsonValue);
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("URL: {0}", websitePosts.app_patch_url);
+          
+            RemoteSettings websitePosts = new RemoteSettings();
+            if (File.Exists("Config.json"))
+            {
+                StreamReader reader_ = new StreamReader("Config.json");
+                jsonValue = reader_.ReadToEnd();
+                reader_.Close();
+                websitePosts = JsonConvert.DeserializeObject<RemoteSettings>(jsonValue);
+                updater_old_version = float.Parse(websitePosts.version);
+            }
 
+            WebClient wb = new WebClient();
+            wb.DownloadFile(url, "Config.json");
+            StreamReader reader = new StreamReader("Config.json");
+            jsonValue = reader.ReadToEnd();
+                   reader.Close();
+            websitePosts = JsonConvert.DeserializeObject<RemoteSettings>(jsonValue);
+
+            Console.ForegroundColor = ConsoleColor.Yellow;
+
+            Console.WriteLine("URL: {0}", websitePosts.app_patch_url);
+            updater_new_version = float.Parse(websitePosts.version);
+          
+            
+            
 
             LocalSettings settings = new LocalSettings();
             settings.app_last_dir = Directory.GetDirectoryRoot(Environment.SystemDirectory + "\\Fraps");
@@ -136,7 +156,7 @@ namespace ModSkinLoLUpdater
                 Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.WriteLine("Actual version :" + CurVerRepZip.Substring(35));
             }
-          
+
             string readline = "";
             bool _true = true;
             bool _false = false;
@@ -146,6 +166,21 @@ namespace ModSkinLoLUpdater
                 Console.WriteLine("Update to enter: y");
                 readline = Console.ReadLine().ToLower();
             }
+            if (updater_new_version != updater_old_version)
+            {
+                ProcessStartInfo info = new ProcessStartInfo("Updater.exe");
+                info.UseShellExecute = true;
+                info.Verb = "runas";
+                try
+                {
+                    Process.Start(info);
+                }
+                catch
+                {
+                    Console.Write("Error update");
+                }
+            }
+
             bool z = readline == "y" ? _true : _false;
             if (z)
             {

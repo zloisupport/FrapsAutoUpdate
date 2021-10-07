@@ -7,7 +7,7 @@ using System.Text;
 
 namespace ModSkinLoLUpdater
 {
-    class DownloadFile
+    public class DownloadFile
     {
         private volatile bool _completed;
 
