@@ -4,5 +4,6 @@
   "app_patch_url": "http://leagueskin.net/p/download-mod-skin-2020-chn",
   "site_patch_url": "https://lol.secure.dyn.riotcdn.net/channels/public/releases/A7C273F1209CB831.manifest",
   "replace_mask_http": "http://s4.modskinlolvn.com/ModSkin_",
-  "replace_mask_exten": ".zip"
+  "replace_mask_exten": ".zip",
+  "update_url": "https://github.com/zloisupport/ModSkinLolUpdater/releases/download/"
 }
