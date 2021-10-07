@@ -54,26 +54,34 @@ namespace ModSkinLoLUpdater
 
 
 
-
-            ExtractArhive ExtArhive = new ExtractArhive();
-            ExtArhive.ExtractZipContent("update.zip", null, ".\\Temp\\");
+            try
+            {
+                ExtractArhive ExtArhive = new ExtractArhive();
+                ExtArhive.ExtractZipContent("update.zip", null, ".\\Temp\\");
+            }
+            catch
+            {
+                Console.WriteLine("Unpacking error!");
+                File.Delete("update.zip");
+            }
 
             foreach (string dirPath in Directory.GetDirectories(".\\Temp\\", "*.*",
-                    SearchOption.AllDirectories))
-                Directory.CreateDirectory(dirPath.Replace(".\\Temp\\", ".\\Temp\\"));
+        SearchOption.AllDirectories))
+                    Directory.CreateDirectory(dirPath.Replace(".\\Temp\\", ".\\Temp\\"));
             foreach (string newPath in Directory.GetFiles(".\\Temp\\", "*.*",
                      SearchOption.AllDirectories))
                 try
                 {
-                   // File.Copy(newPath, newPath.Replace(".\\Temp\\", ""), true);
-                  //  File.Delete(".//update.zip");
-                    //    File.Move("_Config.json", "Config.json",true);
-                    //Directory.Delete("Temp", true);
+                    File.Copy(newPath, newPath.Replace(".\\Temp\\", ""), true);
                 }
-                catch
+                catch 
                 {
-
+                    Console.WriteLine("Remove error");
                 }
+         
+                File.Delete(".//update.zip");
+                Directory.Delete("Temp", true);
+     
         }
     }
 

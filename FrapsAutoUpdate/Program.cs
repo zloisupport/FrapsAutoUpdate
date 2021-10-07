@@ -43,8 +43,6 @@ namespace ModSkinLoLUpdater
         public string app_path { set; get; }
         public object settings { get;set; }
         public float updater_old_version { get; set; }
-
-
         public float updater_new_version { get; set; }
 
         private string jsonValue = "";
@@ -99,7 +97,7 @@ namespace ModSkinLoLUpdater
                 StreamReader reader_ = new StreamReader("Config.json");
                 jsonValue = reader_.ReadToEnd();
                 reader_.Close();
-                websitePosts = JsonConvert.DeserializeObject<RemoteSettings>(jsonValue);
+                websitePost = JsonConvert.DeserializeObject<RemoteSettings>(jsonValue);
                 updater_old_version = websitePost.version;
                 File.Delete("Config.json");
             }
@@ -173,7 +171,8 @@ namespace ModSkinLoLUpdater
             if (updater_new_version != updater_old_version)
             {
                 ProcessStartInfo info = new ProcessStartInfo(@"Updater.exe");
-
+                info.UseShellExecute = true;
+                info.Verb = "runas";
                 string json = File.ReadAllText("Config.json");
                 dynamic jsonObj = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
                 jsonObj["update"] = true;
