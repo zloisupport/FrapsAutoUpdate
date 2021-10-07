@@ -171,7 +171,7 @@ namespace ModSkinLoLUpdater
             }
             if (updater_new_version != updater_old_version)
             {
-                ProcessStartInfo info = new ProcessStartInfo(@"Updater.exe");
+                ProcessStartInfo info = new ProcessStartInfo(@"//Updater.exe");
                 info.UseShellExecute = true;
                 info.Verb = "runas";
                 string json = File.ReadAllText("Config.json");
