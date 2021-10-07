@@ -19,7 +19,7 @@ namespace ModSkinLoLUpdater
 {
     public class RemoteSettings
     {
-        public string version { get; set; }
+        public float version { get; set; }
         public bool update { get; set; }
         public string app_patch_url { get; set; }
         public string site_patch_url { get; set; }
@@ -43,6 +43,8 @@ namespace ModSkinLoLUpdater
         public string app_path { set; get; }
         public object settings { get;set; }
         public float updater_old_version { get; set; }
+
+
         public float updater_new_version { get; set; }
 
         private string jsonValue = "";
@@ -71,7 +73,7 @@ namespace ModSkinLoLUpdater
                 Program program = new Program();
                 program.downloadApp();
                 string paths = Directory.GetDirectoryRoot(Environment.SystemDirectory + "\\Fraps");
-                program.runningApp(paths);
+               program.runningApp(paths);
 
 
             }
@@ -89,15 +91,17 @@ namespace ModSkinLoLUpdater
         
         public void downloadApp()
         {
-          
+
             RemoteSettings websitePosts = new RemoteSettings();
             if (File.Exists("Config.json"))
             {
+                RemoteSettings websitePost = new RemoteSettings();
                 StreamReader reader_ = new StreamReader("Config.json");
                 jsonValue = reader_.ReadToEnd();
                 reader_.Close();
                 websitePosts = JsonConvert.DeserializeObject<RemoteSettings>(jsonValue);
-                updater_old_version = float.Parse(websitePosts.version);
+                updater_old_version = websitePost.version;
+                File.Delete("Config.json");
             }
 
             WebClient wb = new WebClient();
@@ -110,7 +114,7 @@ namespace ModSkinLoLUpdater
             Console.ForegroundColor = ConsoleColor.Yellow;
 
             Console.WriteLine("URL: {0}", websitePosts.app_patch_url);
-            updater_new_version = float.Parse(websitePosts.version);
+            updater_new_version = websitePosts.version;
           
             
             
@@ -168,12 +172,17 @@ namespace ModSkinLoLUpdater
             }
             if (updater_new_version != updater_old_version)
             {
-                ProcessStartInfo info = new ProcessStartInfo("Updater.exe");
-                info.UseShellExecute = true;
-                info.Verb = "runas";
+                ProcessStartInfo info = new ProcessStartInfo(@"Updater.exe");
+
+                string json = File.ReadAllText("Config.json");
+                dynamic jsonObj = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
+                jsonObj["update"] = true;
+                string output = Newtonsoft.Json.JsonConvert.SerializeObject(jsonObj, Newtonsoft.Json.Formatting.Indented);
+                File.WriteAllText("Config.json", output);
+
                 try
                 {
-                    Process.Start(info);
+                   Process.Start(info);
                 }
                 catch
                 {
