@@ -25,6 +25,7 @@ namespace ModSkinLoLUpdater
         public string site_patch_url { get; set; }
         public string replace_mask_http { get; set; }
         public string replace_mask_exten { get; set; }
+        public string update_url { get; set; }
     }
 
     public class LocalSettings
@@ -46,7 +47,7 @@ namespace ModSkinLoLUpdater
         public float updater_new_version { get; set; }
 
         private string jsonValue = "";
-        private string url = "https://raw.githubusercontent.com/zloisupport/testsss/main/json.json";
+        private string url = "https://raw.githubusercontent.com/zloisupport/ModSkinLolUpdater/master/FrapsAutoUpdate/Config.json";
 
         static void Main(string[] args)
         {

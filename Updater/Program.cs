@@ -27,10 +27,12 @@ namespace ModSkinLoLUpdater
             }
             float version = websitePosts.version;
             bool update = websitePosts.update;
+            string update_url = websitePosts.update_url;
+            string extention = websitePosts.replace_mask_exten;
             if (update)
             {
                 var pg = new Program();
-                pg.updateAndUnpack(version);
+                pg.updateAndUnpack(update_url, version,extention);
                 string json = File.ReadAllText("Config.json");
                 dynamic jsonObj = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
                 jsonObj["update"] = false;
@@ -43,10 +45,10 @@ namespace ModSkinLoLUpdater
 
         }
 
-        private void updateAndUnpack(float version)
+        private void updateAndUnpack(string update_url, float version, string extention)
         {
-            string url = "http://weather/net" + version + ".zip";
-            Console.WriteLine(version);
+            string url = update_url + version + extention;
+            Console.WriteLine(url);
             DownloadFile df = new DownloadFile();
             df.DownloadFiles(url, ".//update.zip");
             while (!df.DownloadCompleted)
