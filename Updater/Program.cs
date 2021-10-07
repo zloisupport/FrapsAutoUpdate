@@ -47,7 +47,7 @@ namespace ModSkinLoLUpdater
 
         private void updateAndUnpack(string update_url, float version, string extention)
         {
-            string url = update_url + version + extention;
+            string url = update_url + version + "/ModSkinLOLUpdater" + extention;
             Console.WriteLine(url);
             DownloadFile df = new DownloadFile();
             df.DownloadFiles(url, ".//update.zip");
