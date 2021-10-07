@@ -19,7 +19,7 @@ namespace ModSkinLoLUpdater
 {
     public class RemoteSettings
     {
-        public float version { get; set; }
+        public object version { get; set; }
         public bool update { get; set; }
         public string app_patch_url { get; set; }
         public string site_patch_url { get; set; }
@@ -43,8 +43,8 @@ namespace ModSkinLoLUpdater
         private string app_old_ver { get; set; }
         public string app_path { set; get; }
         public object settings { get;set; }
-        public float updater_old_version { get; set; }
-        public float updater_new_version { get; set; }
+        public object updater_old_version { get; set; }
+        public object updater_new_version { get; set; }
 
         private string jsonValue = "";
         private string url = "https://raw.githubusercontent.com/zloisupport/ModSkinLolUpdater/master/FrapsAutoUpdate/Config.json";
@@ -171,7 +171,7 @@ namespace ModSkinLoLUpdater
             }
             if (updater_new_version != updater_old_version)
             {
-                ProcessStartInfo info = new ProcessStartInfo(@"//Updater.exe");
+                ProcessStartInfo info = new ProcessStartInfo(@"Updater.exe");
                 info.UseShellExecute = true;
                 info.Verb = "runas";
                 string json = File.ReadAllText("Config.json");

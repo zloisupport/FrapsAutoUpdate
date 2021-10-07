@@ -9,30 +9,39 @@ namespace ModSkinLoLUpdater
 {
     class Program 
     {
-        public static string jsonValue { get; private set; }
+        private static object _version;
+        private static bool _update;
+        private static string _update_url;
+        private static string _extention;
+
+        public static string jsonValue { get; set; }
 
         static void Main(string[] args)
         {
-            RemoteSettings websitePosts = new RemoteSettings();
+
             if (File.Exists("Config.json")){
+                RemoteSettings websitePosts = new RemoteSettings();
                 StreamReader reader = new StreamReader("Config.json");
                 jsonValue = reader.ReadToEnd();
                 reader.Close();
+
                 websitePosts = JsonConvert.DeserializeObject<RemoteSettings>(jsonValue);
-            }
+                _version = websitePosts.version;
+                _update = websitePosts.update;
+                _update_url = websitePosts.update_url;
+                _extention = websitePosts.replace_mask_exten;
+
+    }
             else
             {
                 Console.WriteLine("Config.json file not found!");
                 Environment.Exit(0);
             }
-            float version = websitePosts.version;
-            bool update = websitePosts.update;
-            string update_url = websitePosts.update_url;
-            string extention = websitePosts.replace_mask_exten;
-            if (update)
+         
+            if (_update)
             {
                 var pg = new Program();
-                pg.updateAndUnpack(update_url, version,extention);
+                pg.updateAndUnpack(_update_url, _version,_extention);
                 string json = File.ReadAllText("Config.json");
                 dynamic jsonObj = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
                 jsonObj["update"] = false;
@@ -45,7 +54,7 @@ namespace ModSkinLoLUpdater
 
         }
 
-        private void updateAndUnpack(string update_url, float version, string extention)
+        private void updateAndUnpack(string update_url, object version, string extention)
         {
             string url = update_url + version + "/ModSkinLOLUpdater" + extention;
             Console.WriteLine(url);
