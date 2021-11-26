@@ -51,18 +51,21 @@ namespace ModSkinLoLUpdater
 
         static void Main(string[] args)
         {
+
+            var curdir = Directory.GetCurrentDirectory();
+            var runtimeVer = System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription;
+            FileVersionInfo appVerInfo = FileVersionInfo.GetVersionInfo(curdir + "//ModSkinLOLUpdater.exe");
+
+
             LocalSettings settings = new LocalSettings();
             settings.app_last_dir = Directory.GetDirectoryRoot(Environment.SystemDirectory + "\\Fraps");
-
-       
-            // HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest;
 
 
             Console.WriteLine("League of Legends Mods Skin Auto Updater");
             Console.WriteLine("Author: zloisupport");
-            Console.WriteLine("Version: 0.1.0");
+            Console.WriteLine(runtimeVer);
+            Console.WriteLine("Version: "+ appVerInfo.FileVersion);
        
-           
             //Check connections 
             if (ChkIntConnect() == true)
             {
@@ -138,8 +141,10 @@ namespace ModSkinLoLUpdater
                 program.app_old_ver = websitePost.app_version;
                 readers.Close();
             }
-            Console.WriteLine("Installed: {0}", program.app_old_ver);
-
+            if (program.app_old_ver == null)
+                Console.WriteLine("Not installed");
+            else
+                Console.WriteLine("Installed: {0}", program.app_old_ver);
             HtmlWeb client = new HtmlWeb();
 
             HtmlAgilityPack.HtmlDocument doc = client.Load(websitePosts.app_patch_url);
@@ -176,7 +181,7 @@ namespace ModSkinLoLUpdater
                 info.Verb = "runas";
                 string json = File.ReadAllText("Config.json");
                 dynamic jsonObj = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
-                jsonObj["update"] = true;
+                //jsonObj["update"] = true; //
                 string output = Newtonsoft.Json.JsonConvert.SerializeObject(jsonObj, Newtonsoft.Json.Formatting.Indented);
                 File.WriteAllText("Config.json", output);
 
