@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
@@ -46,47 +47,48 @@ namespace ModSkinLoLUpdater
         public object updater_old_version { get; set; }
         public object updater_new_version { get; set; }
 
-        private string jsonValue = "";
-        private string url = "https://raw.githubusercontent.com/zloisupport/ModSkinLolUpdater/master/FrapsAutoUpdate/Config.json";
+        private static string json_value = null;
+        private static string url_config = "https://raw.githubusercontent.com/zloisupport/ModSkinLolUpdater/master/FrapsAutoUpdate/Config.json";
+        private static string current_directory = Directory.GetCurrentDirectory();
+        private static string root_directory = Directory.GetDirectoryRoot(Environment.SystemDirectory+"\\Fraps");
 
         static void Main(string[] args)
         {
+            ModSkinLOLUpdater.UpdateIcon updateIcon = new ModSkinLOLUpdater.UpdateIcon();
+            updateIcon.DownloadIcon();
 
-            var curdir = Directory.GetCurrentDirectory();
-            var runtimeVer = System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription;
-            FileVersionInfo appVerInfo = FileVersionInfo.GetVersionInfo(curdir + "//ModSkinLOLUpdater.exe");
+        //    var run_time_ver = RuntimeInformation.FrameworkDescription;
+        //    var app_ver_info = FileVersionInfo.GetVersionInfo(current_directory + "//ModSkinLOLUpdater.exe");
+
+            //    LocalSettings settings = new LocalSettings();
+            //    settings.app_last_dir=root_directory;
+
+            //    Console.WriteLine(@"League of Legends Mods Skin Auto Updater");
+            //    Console.WriteLine("Author: zloisupport");
+            //    Console.WriteLine(run_time_ver);
+            //    Console.WriteLine("Version: "+ app_ver_info.FileVersion);
+
+            //    //Check connections 
+            //    if (ChkIntConnect())
+            //    {
+            //        Console.ForegroundColor = ConsoleColor.Green;
+            //        Console.WriteLine("There is a connection");
+            //        Console.ResetColor();
+            //        Program program = new Program();
+            //        program.downloadApp();
+            //        string paths = Directory.GetDirectoryRoot(Environment.SystemDirectory + "\\Fraps");
+            //        program.runningApp(paths);
 
 
-            LocalSettings settings = new LocalSettings();
-            settings.app_last_dir = Directory.GetDirectoryRoot(Environment.SystemDirectory + "\\Fraps");
+            //    }
+            //    else
+            //    {
+            //        Console.ForegroundColor = ConsoleColor.Red;
+            //        Console.WriteLine("No connection");
+            //        Console.ResetColor();
 
+            //    }
 
-            Console.WriteLine("League of Legends Mods Skin Auto Updater");
-            Console.WriteLine("Author: zloisupport");
-            Console.WriteLine(runtimeVer);
-            Console.WriteLine("Version: "+ appVerInfo.FileVersion);
-       
-            //Check connections 
-            if (ChkIntConnect() == true)
-            {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("There is a connection");
-                Console.ResetColor();
-                Program program = new Program();
-                program.downloadApp();
-                string paths = Directory.GetDirectoryRoot(Environment.SystemDirectory + "\\Fraps");
-               program.runningApp(paths);
-
-
-            }
-            else
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("No connection");
-                Console.ResetColor();
-                
-            }
-            
         }
 
 
@@ -99,19 +101,19 @@ namespace ModSkinLoLUpdater
             {
                 RemoteSettings websitePost = new RemoteSettings();
                 StreamReader reader_ = new StreamReader("Config.json");
-                jsonValue = reader_.ReadToEnd();
+                json_value = reader_.ReadToEnd();
                 reader_.Close();
-                websitePost = JsonConvert.DeserializeObject<RemoteSettings>(jsonValue);
+                websitePost = JsonConvert.DeserializeObject<RemoteSettings>(json_value);
                 updater_old_version = websitePost.version;
                 File.Delete("Config.json");
             }
 
             WebClient wb = new WebClient();
-            wb.DownloadFile(url, "Config.json");
+            wb.DownloadFile(url_config, "Config.json");
             StreamReader reader = new StreamReader("Config.json");
-            jsonValue = reader.ReadToEnd();
+            json_value = reader.ReadToEnd();
                    reader.Close();
-            websitePosts = JsonConvert.DeserializeObject<RemoteSettings>(jsonValue);
+            websitePosts = JsonConvert.DeserializeObject<RemoteSettings>(json_value);
 
             Console.ForegroundColor = ConsoleColor.Yellow;
 
@@ -174,26 +176,7 @@ namespace ModSkinLoLUpdater
                 Console.WriteLine("Update to enter: y");
                 readline = Console.ReadLine().ToLower();
             }
-            if (updater_new_version != updater_old_version)
-            {
-                ProcessStartInfo info = new ProcessStartInfo(@"Updater.exe");
-                info.UseShellExecute = true;
-                info.Verb = "runas";
-                string json = File.ReadAllText("Config.json");
-                dynamic jsonObj = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
-                //jsonObj["update"] = true; //
-                string output = Newtonsoft.Json.JsonConvert.SerializeObject(jsonObj, Newtonsoft.Json.Formatting.Indented);
-                File.WriteAllText("Config.json", output);
 
-                try
-                {
-                   Process.Start(info);
-                }
-                catch
-                {
-                    Console.Write("Error update");
-                }
-            }
 
             bool z = readline == "y" ? _true : _false;
             if (z)
