@@ -20,7 +20,7 @@ namespace ModSkinLoLUpdater
         {
 
             if (File.Exists("Config.json")){
-                RemoteSettings websitePosts = new RemoteSettings();
+                var websitePosts = new RemoteSettings();
                 StreamReader reader = new StreamReader("Config.json");
                 jsonValue = reader.ReadToEnd();
                 reader.Close();

@@ -54,40 +54,39 @@ namespace ModSkinLoLUpdater
 
         static void Main(string[] args)
         {
-            ModSkinLOLUpdater.UpdateIcon updateIcon = new ModSkinLOLUpdater.UpdateIcon();
-            updateIcon.DownloadIcon();
-
-        //    var run_time_ver = RuntimeInformation.FrameworkDescription;
-        //    var app_ver_info = FileVersionInfo.GetVersionInfo(current_directory + "//ModSkinLOLUpdater.exe");
-
-            //    LocalSettings settings = new LocalSettings();
-            //    settings.app_last_dir=root_directory;
-
-            //    Console.WriteLine(@"League of Legends Mods Skin Auto Updater");
-            //    Console.WriteLine("Author: zloisupport");
-            //    Console.WriteLine(run_time_ver);
-            //    Console.WriteLine("Version: "+ app_ver_info.FileVersion);
-
-            //    //Check connections 
-            //    if (ChkIntConnect())
-            //    {
-            //        Console.ForegroundColor = ConsoleColor.Green;
-            //        Console.WriteLine("There is a connection");
-            //        Console.ResetColor();
-            //        Program program = new Program();
-            //        program.downloadApp();
-            //        string paths = Directory.GetDirectoryRoot(Environment.SystemDirectory + "\\Fraps");
-            //        program.runningApp(paths);
 
 
-            //    }
-            //    else
-            //    {
-            //        Console.ForegroundColor = ConsoleColor.Red;
-            //        Console.WriteLine("No connection");
-            //        Console.ResetColor();
+            var run_time_ver = RuntimeInformation.FrameworkDescription;
+            var app_ver_info = FileVersionInfo.GetVersionInfo(current_directory + "//ModSkinLOLUpdater.exe");
 
-            //    }
+            LocalSettings settings = new LocalSettings();
+            settings.app_last_dir = root_directory;
+
+            Console.WriteLine(@"League of Legends Mods Skin Auto Updater");
+            Console.WriteLine("Author: zloisupport");
+            Console.WriteLine(run_time_ver);
+            Console.WriteLine("Version: " + app_ver_info.FileVersion);
+
+            //Check connections 
+            if (ChkIntConnect())
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("There is a connection");
+                Console.ResetColor();
+                Program program = new Program();
+                program.downloadApp();
+                string paths = Directory.GetDirectoryRoot(Environment.SystemDirectory + "\\Fraps");
+                program.runningApp(paths);
+              
+
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("No connection");
+                Console.ResetColor();
+
+            }
 
         }
 
@@ -245,10 +244,21 @@ namespace ModSkinLoLUpdater
                             text.Close();
                         }
                     }
+                    Thread iconFixThread = new Thread(new ThreadStart(UpdateIcon));
+                    iconFixThread.Start(); //start Thread
                 }
+               
             }
+                
 
 
+
+        }
+
+        public static void UpdateIcon()
+        {
+            ModSkinLOLUpdater.UpdateIcon updateIcon = new ModSkinLOLUpdater.UpdateIcon();
+            updateIcon.DownloadIcon();
         }
     
        public void runningApp(string path)

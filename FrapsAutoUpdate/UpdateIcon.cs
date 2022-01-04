@@ -22,50 +22,48 @@ namespace ModSkinLOLUpdater
         public void DownloadIcon()
         {
 
-            WebClient web = new WebClient();
-            web.Headers.Set("Content-Type", "image/jpeg");
-            web.Headers.Add("user-agent", "Mozilla/5.0 (compatible; MSIE 6.0; " +
-                                  "Windows NT 5.2; .NET CLR 1.0.3705;)");
             if (!Directory.Exists(fraps_directory_120img)) Directory.CreateDirectory(fraps_directory_120img);
-            // web.DownloadFile(HTTPURL + "Ahri" + EXTENTION, root_directory + "\\Fraps\\data\\120\\" + "ahri" + EXTENTION);
             ModSkinLoLUpdater.DownloadFile downloadFile = new ModSkinLoLUpdater.DownloadFile();
             int count = 0;
             var name = ReadChampionName();
             foreach (var n in name)
             {
-
+                var getFiles = Directory.GetFiles(fraps_directory_120img);
                 Console.Clear();
-                Console.WriteLine(count + ": loaded of :" + name.Count);
-                //  web.DownloadFileAsync(new Uri(HTTPURL + n+ EXTENTION), root_directory + "\\Fraps\\data\\120\\" + n + EXTENTION);
+                Console.WriteLine("Icon fix\nDownloaded: "+getFiles.Length + " Total: " +name.Count);
                 bool file = FileSizes(n);
-                Console.WriteLine(n);
                 if (file) {
-                    Console.WriteLine(n+"www");
                     downloadFile.DownloadFiles(HTTPURL + n + EXTENTION, root_directory + "\\Fraps\\data\\120\\" + n + EXTENTION);
                     while (!downloadFile.DownloadCompleted)
-                        Thread.Sleep(3);
+                        Thread.Sleep(13);
                     count++;
+                   
                 }
             }
 
-            //foreach (var n in name)
-            //{
-            //    var file_size =new FileInfo(fraps_directory_120img + n+EXTENTION);
-                
-            //    if (file_size.Exists)
-            //    {
-            //        long size = file_size.Length;
-            //        if (size != 0)
-            //            ResizeImage(fraps_directory_120img, fraps_directory_80img + n, 80, n);
-            //            ResizeImage(fraps_directory_120img, fraps_directory_data + n, 57, n);
-            //    }
-            //    else
-            //    {
-            //        downloadFile.DownloadFiles(HTTPURL + n + EXTENTION, root_directory + "\\Fraps\\data\\120\\" + n + EXTENTION);
-            //        while (!downloadFile.DownloadCompleted)
-            //            Thread.Sleep(3);
-            //    }
-            //}
+            foreach (var n in name)
+            {
+                var file_size = new FileInfo(fraps_directory_120img + n + EXTENTION);
+
+                if (file_size.Exists)
+                {
+                    long size = file_size.Length;
+                    if (size> 12791 & size !=0)
+                    {
+                        ResizeImage(fraps_directory_120img, fraps_directory_80img + n, 80, n);
+                        ResizeImage(fraps_directory_120img, fraps_directory_data + n, 57, n);
+                    }
+                    else
+                    {
+                        downloadFile.DownloadFiles(HTTPURL + n + EXTENTION, root_directory + "\\Fraps\\data\\120\\" + n + EXTENTION);
+                        while (!downloadFile.DownloadCompleted)
+                            Thread.Sleep(30);
+                    }
+
+
+                }
+
+            }
         }
 
 
@@ -76,7 +74,7 @@ namespace ModSkinLOLUpdater
             if (file_size.Exists)
             {
                 long size = file_size.Length;
-                if (size >= 2096)
+                if (size > 3100 | size != 0)
                     return false;
             }
 
@@ -90,7 +88,7 @@ namespace ModSkinLOLUpdater
             foreach (var n in name)
             {
                 string regex = Regex.Replace(n, "[0-9.,]", string.Empty);
-                if (regex == "Fiddlesticks") regex = "Fiddlesticks";
+                if (regex == "Fiddlesticks") regex = "FiddleSticks";
                 names.Add(regex);
             }
             return names;
