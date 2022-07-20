@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 
 using System.Timers;
 using HtmlAgilityPack;
+using ModSkinLOLUpdater;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Timer = System.Timers.Timer;
@@ -77,7 +78,6 @@ namespace ModSkinLoLUpdater
                 program.downloadApp();
                 string paths = Directory.GetDirectoryRoot(Environment.SystemDirectory + "\\Fraps");
                 program.runningApp(paths);
-              
 
             }
             else
@@ -91,7 +91,7 @@ namespace ModSkinLoLUpdater
         }
 
 
-        
+
         public void downloadApp()
         {
 
@@ -142,10 +142,15 @@ namespace ModSkinLoLUpdater
                 program.app_old_ver = websitePost.app_version;
                 readers.Close();
             }
-            if (program.app_old_ver == null)
+            if (program.app_old_ver == null) {
                 Console.WriteLine("Not installed");
-            else
+
+            }
+            else {
                 Console.WriteLine("Installed: {0}", program.app_old_ver);
+                UserSetting userSetting = new UserSetting();
+                userSetting.SaveSetting();
+            }
             HtmlWeb client = new HtmlWeb();
 
             HtmlAgilityPack.HtmlDocument doc = client.Load(websitePosts.app_patch_url);
@@ -180,6 +185,8 @@ namespace ModSkinLoLUpdater
             bool z = readline == "y" ? _true : _false;
             if (z)
             {
+                UserSetting userSetting = new UserSetting();
+                userSetting.RestoreSetting();
                 if (settings.app_version != program.app_old_ver)
                 {
 
