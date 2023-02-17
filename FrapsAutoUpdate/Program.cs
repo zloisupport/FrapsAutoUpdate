@@ -7,6 +7,7 @@ using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -28,6 +29,7 @@ namespace ModSkinLoLUpdater
         public string replace_mask_http { get; set; }
         public string replace_mask_exten { get; set; }
         public string update_url { get; set; }
+        public DateTime timeout { get; set; }
     }
 
     public class LocalSettings
@@ -39,19 +41,21 @@ namespace ModSkinLoLUpdater
     }
 
 
-  public class Program
+    public class Program
     {
 
         private string app_old_ver { get; set; }
         public string app_path { set; get; }
-        public object settings { get;set; }
+        public object settings { get; set; }
         public object updater_old_version { get; set; }
         public object updater_new_version { get; set; }
 
         private static string json_value = null;
         private static string url_config = "https://raw.githubusercontent.com/zloisupport/ModSkinLolUpdater/master/FrapsAutoUpdate/Config.json";
         private static string current_directory = Directory.GetCurrentDirectory();
-        private static string root_directory = Directory.GetDirectoryRoot(Environment.SystemDirectory+"\\Fraps");
+        private static string root_directory = Directory.GetDirectoryRoot(Environment.SystemDirectory + "\\Fraps");
+        private bool not_installed;
+
 
         static void Main(string[] args)
         {
@@ -76,6 +80,8 @@ namespace ModSkinLoLUpdater
                 Console.ResetColor();
                 Program program = new Program();
                 program.downloadApp();
+                program.PathRedirect();
+                System.Threading.Thread.Sleep(60);
                 string paths = Directory.GetDirectoryRoot(Environment.SystemDirectory + "\\Fraps");
                 program.runningApp(paths);
 
@@ -90,37 +96,70 @@ namespace ModSkinLoLUpdater
 
         }
 
+        public void PathRedirect()
+        {
+            PatchHttpRedirect path = new PatchHttpRedirect();
+            path.PathExe();
+        }
+        private static bool ConnectionTimeout()
+        {
+            if (!File.Exists("Config.json"))
+            {
+                return true;
+            }
+            string alldata = File.ReadAllText("Config.json");
+            JObject version = JObject.Parse(alldata);
 
+
+            RemoteSettings websitePosts = new RemoteSettings();
+            var reader_ = File.ReadAllText("Config.json");
+            websitePosts = JsonConvert.DeserializeObject<RemoteSettings>(reader_);
+            int lastConnectionTime = websitePosts.timeout.Hour;
+            int systemTime = DateTime.Now.Hour;
+
+
+            int hourRes = lastConnectionTime - systemTime;
+            if (hourRes <= 1 && hourRes < 0 || hourRes >= 1)
+            {
+                return true;
+            }
+            return false;
+        }
 
         public void downloadApp()
         {
-
-            RemoteSettings websitePosts = new RemoteSettings();
-            if (File.Exists("Config.json"))
-            {
-                RemoteSettings websitePost = new RemoteSettings();
-                StreamReader reader_ = new StreamReader("Config.json");
-                json_value = reader_.ReadToEnd();
-                reader_.Close();
-                websitePost = JsonConvert.DeserializeObject<RemoteSettings>(json_value);
-                updater_old_version = websitePost.version;
-                File.Delete("Config.json");
-            }
-
-            WebClient wb = new WebClient();
-            wb.DownloadFile(url_config, "Config.json");
-            StreamReader reader = new StreamReader("Config.json");
-            json_value = reader.ReadToEnd();
-                   reader.Close();
-            websitePosts = JsonConvert.DeserializeObject<RemoteSettings>(json_value);
-
-            Console.ForegroundColor = ConsoleColor.Yellow;
-
-            Console.WriteLine("URL: {0}", websitePosts.app_patch_url);
-            updater_new_version = websitePosts.version;
           
-            
-            
+            string pattern = @"_";
+
+
+            if (!File.Exists("Config.json") || ConnectionTimeout())
+            {
+                
+                WebClient wb = new WebClient();
+                json_value=wb.DownloadString(url_config);
+
+                RemoteSettings _websitePosts = new RemoteSettings();
+                _websitePosts = JsonConvert.DeserializeObject<RemoteSettings>(json_value);
+
+                _websitePosts.timeout = DateTime.Now;
+                _websitePosts.update = true;
+
+                var data = JsonConvert.SerializeObject(_websitePosts, Formatting.Indented);
+                File.WriteAllText("Config.json", data);
+               
+            }
+          
+            RemoteSettings websitePosts = new RemoteSettings();
+            StreamReader reader_ = new StreamReader("Config.json");
+            json_value = reader_.ReadToEnd();
+            websitePosts = JsonConvert.DeserializeObject<RemoteSettings>(json_value);
+            updater_old_version = websitePosts.version;
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("URL: {0}", websitePosts.app_patch_url);
+            updater_new_version = Regex.Replace((string)websitePosts.version, pattern, "");
+
+
+
 
             LocalSettings settings = new LocalSettings();
             settings.app_last_dir = Directory.GetDirectoryRoot(Environment.SystemDirectory + "\\Fraps");
@@ -136,17 +175,22 @@ namespace ModSkinLoLUpdater
 
             if (File.Exists(settings.app_last_dir + "\\Fraps\\setting.json"))
             {
+
                 StreamReader readers = new StreamReader(settings.app_last_dir + "\\Fraps\\setting.json");
                 string jsonValueaa = readers.ReadToEnd();
                 LocalSettings websitePost = JsonConvert.DeserializeObject<LocalSettings>(jsonValueaa);
-                program.app_old_ver = websitePost.app_version;
+
+                string result = Regex.Replace(websitePost.app_version, pattern, "");
+                program.app_old_ver = result;
                 readers.Close();
             }
-            if (program.app_old_ver == null) {
+            if (program.app_old_ver == null)
+            {
                 Console.WriteLine("Not installed");
-
+                not_installed = true;
             }
-            else {
+            else
+            {
                 Console.WriteLine("Installed: {0}", program.app_old_ver);
                 UserSetting userSetting = new UserSetting();
                 userSetting.SaveSetting();
@@ -162,13 +206,13 @@ namespace ModSkinLoLUpdater
                 string CurVerRepHttp = CurVerRecord[0].Replace(websitePosts.replace_mask_http, "");
                 string CurVerRepZip = CurVerRepHttp.Replace(websitePosts.replace_mask_exten, "");
 
-               
+
                 settings.app_http = CurVerRecord[0];
-                settings.app_version = CurVerRepZip.Substring(35);
+                settings.app_version = Regex.Replace(CurVerRepZip.Substring(35), pattern, "");
                 settings.app_exe = "LOLPRO.exe";
 
                 Console.ForegroundColor = ConsoleColor.Cyan;
-                Console.WriteLine("Actual version :" + CurVerRepZip.Substring(35));
+                Console.WriteLine("Actual version : " + settings.app_version);
             }
 
             string readline = "";
@@ -177,13 +221,19 @@ namespace ModSkinLoLUpdater
 
             if (settings.app_version != program.app_old_ver)
             {
-                Console.WriteLine("Update to enter: y");
+                if (not_installed)
+                {
+                    Console.WriteLine("Press 'y' to install:");
+                }
+                else
+                {
+                    Console.WriteLine("Press 'y' to update");
+                }
                 readline = Console.ReadLine().ToLower();
             }
 
 
-            bool z = readline == "y" ? _true : _false;
-            if (z)
+            if (readline == "y" || readline == "н")
             {
                 UserSetting userSetting = new UserSetting();
                 userSetting.RestoreSetting();
@@ -254,32 +304,38 @@ namespace ModSkinLoLUpdater
                     Thread iconFixThread = new Thread(new ThreadStart(UpdateIcon));
                     iconFixThread.Start(); //start Thread
                 }
-               
+
             }
-                
+
 
 
 
         }
+
+
+
+
+
+
 
         public static void UpdateIcon()
         {
             ModSkinLOLUpdater.UpdateIcon updateIcon = new ModSkinLOLUpdater.UpdateIcon();
             updateIcon.DownloadIcon();
         }
-    
-       public void runningApp(string path)
+
+        public void runningApp(string path)
         {
-         
-                ProcessStartInfo info = new ProcessStartInfo(path + "Fraps\\LOLPRO.exe");
-                info.UseShellExecute = true;
-                info.Verb = "runas";
+
+            ProcessStartInfo info = new ProcessStartInfo(path + "Fraps\\LOLPRO.exe");
+            info.UseShellExecute = true;
+            info.Verb = "runas";
             try
             {
-                Process.Start(info); 
-           
+                Process.Start(info);
+
                 Console.WriteLine("The application is running");
-               
+
             }
             catch
             {
@@ -287,7 +343,8 @@ namespace ModSkinLoLUpdater
             }
         }
 
-        public static bool ChkIntConnect() {
+        public static bool ChkIntConnect()
+        {
             try
             {
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://ya.ru");
