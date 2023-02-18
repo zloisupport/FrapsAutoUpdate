@@ -80,7 +80,7 @@ namespace ModSkinLoLUpdater
                 Console.ResetColor();
                 Program program = new Program();
                 program.downloadApp();
-                program.PathRedirect();
+              
                 System.Threading.Thread.Sleep(60);
                 string paths = Directory.GetDirectoryRoot(Environment.SystemDirectory + "\\Fraps");
                 program.runningApp(paths);
@@ -128,15 +128,15 @@ namespace ModSkinLoLUpdater
 
         public void downloadApp()
         {
-          
+
             string pattern = @"_";
 
 
             if (!File.Exists("Config.json") || ConnectionTimeout())
             {
-                
+
                 WebClient wb = new WebClient();
-                json_value=wb.DownloadString(url_config);
+                json_value = wb.DownloadString(url_config);
 
                 RemoteSettings _websitePosts = new RemoteSettings();
                 _websitePosts = JsonConvert.DeserializeObject<RemoteSettings>(json_value);
@@ -146,9 +146,9 @@ namespace ModSkinLoLUpdater
 
                 var data = JsonConvert.SerializeObject(_websitePosts, Formatting.Indented);
                 File.WriteAllText("Config.json", data);
-               
+
             }
-          
+
             RemoteSettings websitePosts = new RemoteSettings();
             StreamReader reader_ = new StreamReader("Config.json");
             json_value = reader_.ReadToEnd();
@@ -301,15 +301,15 @@ namespace ModSkinLoLUpdater
                             text.Close();
                         }
                     }
+                  
+                   program.PathRedirect();
+  
                     Thread iconFixThread = new Thread(new ThreadStart(UpdateIcon));
                     iconFixThread.Start(); //start Thread
                 }
 
             }
-
-
-
-
+           
         }
 
 

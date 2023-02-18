@@ -19,9 +19,13 @@ namespace ModSkinLOLUpdater
             Console.WriteLine(root_directory);
             byte[] replacePattern = new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
             byte[] findPattern = new byte[] { 0x68, 0x00, 0x74, 0x00, 0x74, 0x00, 0x70 };
-           // byte[] findPattern = new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
-            byte[] newFrpasExe = ReplaceBytes(frpasExe, findPattern, replacePattern);
-    
+            byte[] newFrpasExe =  ReplaceBytes(frpasExe, findPattern, replacePattern);
+            int count = 0;
+            while (count < 10)
+            {
+                newFrpasExe = ReplaceBytes(newFrpasExe, findPattern, replacePattern);
+                count++;
+            }
             try
             {
                 File.Delete(root_directory + @"LOLPRO.exe");
